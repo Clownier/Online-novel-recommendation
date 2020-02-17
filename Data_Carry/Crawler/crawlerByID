@@ -1,0 +1,51 @@
+import requests  # 导入requests包
+from bs4 import BeautifulSoup
+import re
+
+
+def getSoupByID(id=None):
+    url = 'https://book.qidian.com/info/' + id
+    strhtml = requests.get(url)
+    soup = BeautifulSoup(strhtml.text, 'lxml')
+    return soup
+
+
+def getKindBySoup(soup=None):
+    data = soup.select(
+        'body > div > div.crumbs-nav.center990 > span > a')
+    # print(data)
+    result = []
+    for item in data:
+        result += [item.get_text()]
+    # print(result[1:3])
+    return result[1:3]
+
+
+def getNameBySoup(soup=None):
+    data = soup.select(
+        'body > div > div.crumbs-nav.center990 > span > a:nth-child(8)')
+    # print(data)
+    result = data[0].get_text()
+    # print(result)
+    return result
+
+
+soup = getSoupByID('2643379')
+kind = getKindBySoup(soup)
+print(len(kind))
+name = getNameBySoup(soup)
+
+# body > div > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > h1 > em
+# url = 'https://book.qidian.com/info/2643379'
+# strhtml = requests.get(url)
+# soup = BeautifulSoup(strhtml.text, 'lxml')
+# data = soup.select('#main>div>div.mtop.firstMod.clearfix>div.centerBox>ul.newsList>li > a')
+# print(data)
+# for item in data:
+#     result={
+#         'title':item.get_text(),
+#         'link':item.get('href'),
+#         'content':item.get('title'),
+#         'ID':re.findall('\d+',item.get('href'))
+#     }
+#     print(result)
